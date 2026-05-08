@@ -9,7 +9,6 @@ import java.util.*;
 /**
  * Bean 工具
  *
- * @author XUEW
  */
 public class BeanUtil {
 

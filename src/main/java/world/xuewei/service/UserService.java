@@ -16,7 +16,6 @@ import java.util.Map;
 /**
  * 用户服务类
  *
- * @author XUEW
  */
 @Service
 public class UserService extends BaseService<User> {

@@ -8,7 +8,6 @@ import world.xuewei.entity.History;
 /**
  * 历史控制器
  *
- * @author XUEW
  */
 @RestController
 @RequestMapping("history")

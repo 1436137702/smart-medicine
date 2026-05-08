@@ -13,20 +13,8 @@ import java.util.*;
 
 /**
  * 系统跳转控制器
- * <p>
- * ==========================================================================
- * 郑重说明：本项目免费开源！原创作者为：薛伟同学，严禁私自出售。
- * ==========================================================================
- * B站账号：薛伟同学
- * 微信公众号：薛伟同学
- * 作者博客：http://xuewei.world
- * ==========================================================================
- * 陆陆续续总会收到粉丝的提醒，总会有些人为了赚取利益倒卖我的开源项目。
- * 不乏有粉丝朋友出现钱付过去，那边只把代码发给他就跑路的，最后还是根据线索找到我。。
- * 希望各位朋友擦亮慧眼，谨防上当受骗！
- * ==========================================================================
  *
- * @author <a href="http://xuewei.world/about">XUEW</a>
+ * 智慧医问-智能医药系统 - 本科毕业设计项目
  */
 @Controller
 public class SystemController extends BaseController<User> {
@@ -129,14 +117,13 @@ public class SystemController extends BaseController<User> {
     }
 
     /**
-     * 查询相关疾病下的药
+     * 药品详情页面（记录浏览量）
      */
     @GetMapping("findMedicineOne")
     public String findMedicineOne(Map<String, Object> map, Integer id) {
-        Medicine medicine = medicineService.get(id);
-//        historyService.insetOne(loginUser.getId(),MedicalConstants.TYPE_MEDICINE,medicine.getMedicineName());
-        map.put("medicine", medicine);
-        return "medicine";
+        Map<String, Object> medicineOne = medicineService.getMedicineOne(id);
+        map.putAll(medicineOne);
+        return "medicine-detail";
     }
 
     /**
@@ -255,5 +242,51 @@ public class SystemController extends BaseController<User> {
         List<Medicine> medicines = medicineService.all();
         map.put("medicines", medicines);
         return "all-medical";
+    }
+
+    /**
+     * 药品详情页面（记录浏览量）
+     */
+    @GetMapping("medicine-detail")
+    public String medicineDetail(Map<String, Object> map, Integer id) {
+        Map<String, Object> medicineOne = medicineService.getMedicineOne(id);
+        map.putAll(medicineOne);
+        return "medicine";
+    }
+
+    /**
+     * 热门排行页面
+     */
+    @GetMapping("hot-ranking")
+    public String hotRanking(Map<String, Object> map) {
+        List<Map<String, Object>> hotIllnessList = illnessService.getHotIllnessList(10);
+        List<Map<String, Object>> hotMedicineList = medicineService.getHotMedicineList(10);
+        map.put("hotIllnessList", hotIllnessList);
+        map.put("hotMedicineList", hotMedicineList);
+        return "hot-ranking";
+    }
+
+    /**
+     * 管理员统计分析页面
+     */
+    @GetMapping("admin-stats")
+    public String adminStats(Map<String, Object> map) {
+        if (Assert.isEmpty(loginUser) || !loginUser.getRoleStatus().equals(1)) {
+            return "redirect:/index.html";
+        }
+        List<User> allUsers = userService.all();
+        List<Illness> allIllnesses = illnessService.all();
+        List<Medicine> allMedicines = medicineService.all();
+        List<Feedback> allFeedbacks = feedbackService.all();
+        List<Map<String, Object>> hotIllnessList = illnessService.getHotIllnessList(10);
+        List<Map<String, Object>> hotMedicineList = medicineService.getHotMedicineList(10);
+
+        map.put("userCount", allUsers.size());
+        map.put("illnessCount", allIllnesses.size());
+        map.put("medicineCount", allMedicines.size());
+        map.put("feedbackCount", allFeedbacks.size());
+        map.put("hotIllnessList", hotIllnessList);
+        map.put("hotMedicineList", hotMedicineList);
+        return "admin-stats";
     }
 }

@@ -16,7 +16,6 @@ import java.util.Map;
 /**
  * 疾病分类服务类
  *
- * @author XUEW
  */
 @Service
 public class IllnessKindService extends BaseService<IllnessKind> {

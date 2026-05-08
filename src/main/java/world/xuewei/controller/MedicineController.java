@@ -8,7 +8,6 @@ import world.xuewei.entity.Medicine;
 /**
  * 药品控制器
  *
- * @author XUEW
  */
 @RestController
 @RequestMapping("medicine")

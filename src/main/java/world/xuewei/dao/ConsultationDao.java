@@ -2,13 +2,14 @@ package world.xuewei.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
-import world.xuewei.entity.MedicalNews;
+import world.xuewei.entity.Consultation;
 
 /**
- * 咨询数据库访问
+ * 咨询记录数据库访问
  *
+ * @author XUEW
  */
 @Repository
-public interface MedicalNewsDao extends BaseMapper<MedicalNews> {
+public interface ConsultationDao extends BaseMapper<Consultation> {
 
 }

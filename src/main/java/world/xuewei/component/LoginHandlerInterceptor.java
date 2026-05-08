@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 登录拦截器
  *
- * @author XUEW
  */
 public class LoginHandlerInterceptor implements HandlerInterceptor {
 

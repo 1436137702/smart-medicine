@@ -6,7 +6,6 @@ import java.util.List;
 /**
  * 基础服务接口
  *
- * @author XUEW
  */
 public interface IService<T> {
 

@@ -16,7 +16,6 @@ import java.util.Map;
 /**
  * 疾病药品服务类
  *
- * @author XUEW
  */
 @Service
 public class IllnessMedicineService extends BaseService<IllnessMedicine> {

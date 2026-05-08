@@ -16,7 +16,6 @@ import java.util.Map;
 /**
  * 咨询服务类
  *
- * @author XUEW
  */
 @Service
 public class MedicalNewsService extends BaseService<MedicalNews> {

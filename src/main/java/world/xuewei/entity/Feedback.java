@@ -34,6 +34,11 @@ public class Feedback {
     private String name;
 
     /**
+     * 反馈用户ID
+     */
+    private Integer userId;
+
+    /**
      * 邮箱
      */
     private String email;
@@ -47,6 +52,11 @@ public class Feedback {
      * 反馈内容
      */
     private String content;
+
+    /**
+     * 处理状态：0未处理，1已处理
+     */
+    private Integer status;
 
     /**
      * 创建时间

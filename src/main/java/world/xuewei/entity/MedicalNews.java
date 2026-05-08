@@ -13,7 +13,6 @@ import java.util.Date;
 /**
  * 咨询实体
  *
- * @author XUEW
  */
 @Data
 @NoArgsConstructor

@@ -7,7 +7,6 @@ import world.xuewei.entity.History;
 /**
  * 历史数据库访问
  *
- * @author XUEW
  */
 @Repository
 public interface HistoryDao extends BaseMapper<History> {

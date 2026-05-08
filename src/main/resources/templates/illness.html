@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zxx" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
@@ -41,11 +41,16 @@
                             <div class="comments">
                                 <div style="margin-top: 30px;text-align: center"><h3 th:text="${title eq null}?'全部':('与'+${title}+'相关的药如下')"></h3></div>
                                 <div class="comment-box d-flex align-items-center justify-content-between" th:each="me:${medicineList}">
-                                    <div class="comment-image">
-                                        <a th:href="@{findMedicineOne(id=${me.id})}">
-                                        <img th:src="${me.imgPath}" alt="image"/>
-                                        </a>
-                                    </div>
+                                    <div class="list-top">
+                                    <a th:href="@{findMedicineOne(id=${me.id})}">
+                                        <div class="medicine-img-wrapper" style="width: 150px; height: 150px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 8px; overflow: hidden;">
+                                            <img th:src="${me.imgPath}"
+                                                 alt="药品图片"
+                                                 style="max-width: 100%; max-height: 100%; object-fit: cover;"
+                                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'text-align:center;color:#999;\'><i class=\'fa fa-image\' style=\'font-size:40px;display:block;margin-bottom:8px;\'></i><span>暂无图片</span></div>'"/>
+                                        </div>
+                                    </a>
+                                </div>
                                     <div class="comment-content" style="width: 80%;height: 150px">
                                         <a th:href="@{findMedicineOne(id=${me.id})}">
                                             <h5 class="m-0" th:text="${me.medicineName}">Helena</h5>

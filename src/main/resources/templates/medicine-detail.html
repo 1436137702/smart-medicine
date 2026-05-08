@@ -1,0 +1,128 @@
+﻿﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zxx" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>药品详情 - 智慧医问-智能医药系统</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/cropped-favicon-32x32.png"/>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/plugin.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/dashboard.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/fonts/flaticon.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/icons.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="assets/fonts/line-icons.css" type="text/css"/>
+    <link rel="stylesheet" href="common/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+
+<div id="preloader">
+    <div id="status"></div>
+</div>
+
+<div th:replace="common/common-bar::#header"></div>
+
+<section class="blog-single">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-12">
+                <div class="blog-sing-left">
+                    <div class="blog-sinlg-tab">
+                        <div class="blog-posted-admin">
+                            <i class="fas fa-user"></i> 智慧医问
+                            <span><i class="fas fa-eye"></i> 浏览量：<span th:text="${pageview}">0</span></span>
+                        </div>
+
+                        <h2 class="mt-2 mb-3" th:text="${medicine.medicineName}"></h2>
+
+                        <div class="medicine-detail-image text-center mb-4" style="background: #f5f5f5; padding: 30px; border-radius: 12px;">
+                            <img th:src="${medicine.imgPath}"
+                                 alt="药品图片"
+                                 style="max-width: 300px; max-height: 300px; object-fit: contain; border-radius: 8px;"
+                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'padding: 40px; text-align: center; color: #999;\'><i class=\'fa fa-image\' style=\'font-size: 80px; display: block; margin-bottom: 16px; color: #ddd;\'></i><h5>暂无药品图片</h5><p>该药品的图片资源暂时不可用</p></div>'"/>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="fw-bold">药品名称：</label>
+                                    <p th:text="${medicine.medicineName}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="fw-bold">关键词：</label>
+                                    <p th:text="${medicine.keyword}"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label class="fw-bold">功效主治：</label>
+                            <div class="p-3 bg-light rounded" th:text="${medicine.medicineEffect}"></div>
+                        </div>
+
+                        <div class="mt-4" th:if="${medicine.usAge != null}">
+                            <label class="fw-bold">用法用量：</label>
+                            <div class="p-3 bg-light rounded" th:text="${medicine.usAge}"></div>
+                        </div>
+
+                        <div class="mt-4" th:if="${medicine.taboo != null}">
+                            <label class="fw-bold">禁忌：</label>
+                            <div class="p-3 bg-danger text-white rounded" th:text="${medicine.taboo}"></div>
+                        </div>
+
+                        <div class="mt-4" th:if="${medicine.medicineType != null}">
+                            <label class="fw-bold">药品类型：</label>
+                            <p th:switch="${medicine.medicineType}">
+                                <span th:case="0">西药</span>
+                                <span th:case="1">中药</span>
+                                <span th:case="2">中成药</span>
+                                <span th:case="*">其他</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <div class="sidebar-widget">
+                    <div class="widget">
+                        <h4 class="widget-title">相关疾病</h4>
+                        <div class="widget-content">
+                            <p class="text-muted">查看与该药品相关的疾病信息</p>
+                            <a href="findIllness" class="btn btn-na btn-sm mt-2">查看疾病百科</a>
+                        </div>
+                    </div>
+
+                    <div class="widget mt-4">
+                        <h4 class="widget-title">返回搜索</h4>
+                        <div class="widget-content">
+                            <a href="findMedicines" class="btn btn-primary btn-sm">继续搜索药品</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="common/common-bar::#back"></div>
+<div th:replace="common/common-bar::#footer"></div>
+<div th:replace="common/common-bar::#search"></div>
+<div th:replace="common/common-bar::#back-to-top"></div>
+
+<script src="assets/js/jquery-3.5.1.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/plugin.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/custom-nav.js"></script>
+<script src="assets/js/jpanelmenu.min.js"></script>
+<script src="assets/js/dashboard-custom.js"></script>
+<script src="common/utils/reg.js"></script>
+<script src="common/layer/layer.js"></script>
+<script src="common/custom.js"></script>
+</body>
+</html>

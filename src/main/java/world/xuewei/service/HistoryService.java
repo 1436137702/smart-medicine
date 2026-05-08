@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 /**
  * 历史服务类
  *
- * @author XUEW
  */
 @Service
 public class HistoryService extends BaseService<History> {

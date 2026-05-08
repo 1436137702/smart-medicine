@@ -7,7 +7,6 @@ import java.util.Map;
 /**
  * 断言判定
  *
- * @author XUEW
  */
 public class Assert {
 

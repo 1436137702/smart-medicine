@@ -14,7 +14,6 @@ import java.util.Date;
 /**
  * 历史实体
  *
- * @author XUEW
  */
 @Data
 @NoArgsConstructor

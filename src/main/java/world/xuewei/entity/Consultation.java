@@ -1,7 +1,6 @@
 package world.xuewei.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -12,15 +11,16 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * 疾病实体
+ * 咨询记录实体
  *
+ * @author XUEW
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@TableName("illness")
-public class Illness {
+@TableName("consultation")
+public class Consultation {
 
     /**
      * 主键ID
@@ -29,29 +29,29 @@ public class Illness {
     private Integer id;
 
     /**
-     * 疾病所属种类id
+     * 用户ID
      */
-    private Integer kindId;
+    private Integer userId;
 
     /**
-     * 疾病的名字
+     * 用户问题
      */
-    private String illnessName;
+    private String question;
 
     /**
-     * 引起的原因
+     * AI回复
      */
-    private String includeReason;
+    private String answer;
 
     /**
-     * 主要的症状
+     * 关联疾病ID，逗号分隔
      */
-    private String illnessSymptom;
+    private String relatedIllnessIds;
 
     /**
-     * 特殊的症状
+     * 关联药品ID，逗号分隔
      */
-    private String specialSymptom;
+    private String relatedMedicineIds;
 
     /**
      * 创建时间
@@ -62,10 +62,4 @@ public class Illness {
      * 更新时间
      */
     private Date updateTime;
-
-    @TableField(exist = false)
-    private IllnessKind kind;
-
-    @TableField(exist = false)
-    private IllnessMedicine illnessMedicine;
 }

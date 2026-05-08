@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+﻿﻿﻿﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zxx" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Ayurvedic - Medical Template</title>
+    <title>智能医生 - 智慧医问-智能医药系统</title>
 
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/cropped-favicon-32x32.png"/>
 
@@ -21,6 +21,49 @@
 
     <link rel="stylesheet" href="assets/fonts/line-icons.css" type="text/css"/>
     <link rel="stylesheet" href="common/font-awesome/css/font-awesome.min.css">
+    <style>
+        .disclaimer-banner {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #856404;
+        }
+        .disclaimer-banner i {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        .related-info {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .related-info h6 {
+            margin: 0 0 6px 0;
+            color: #2e7d32;
+        }
+        .related-info .tag {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 2px 4px 2px 0;
+            font-size: 12px;
+        }
+        .history-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .history-item:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -40,8 +83,14 @@
                 </div>
                 <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
                     <div class="dashboard-content">
+                        
+                        <div class="disclaimer-banner">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            <strong>免责声明：</strong>本智能医生提供的信息仅供参考，不构成医疗诊断或治疗建议。如有身体不适，请及时就医或咨询专业医生。
+                        </div>
+
                         <div class="row">
-                            <div class="col-lg-12 col-md-12">
+                            <div class="col-lg-8 col-md-12">
                                 <div class="message">
                                     <div class="message-header inbox-item">
                                         <div class="inbox-image">
@@ -53,7 +102,7 @@
                                         </div>
                                     </div>
                                     <div class="message-content">
-                                        <div id="messages" style="height: 260px;overflow-y: auto">
+                                        <div id="messages" style="height: 300px;overflow-y: auto">
                                             <div class="msg-received">
                                                 <div class="msg-image">
                                                     <img src="assets/images/team/user-2.jpg" alt="image">
@@ -61,19 +110,29 @@
                                                 <div class="msg-content">
                                                     <p>现在</p>
                                                     <p class="msg">
-                                                        [[${session.loginUser.userName}]]你好，我是您的智能专属医生薛伟，身体不舒服或者有任何需要咨询的问题，都可以向我提问，我会全心全意为您解答！</p>
+                                                        [[${session.loginUser.userName}]]你好，我是您的智能医药助手，身体不舒服或者有任何需要咨询的问题，都可以向我提问，我会全心全意为您解答！</p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="msg-reply">
-                                            <textarea id="message" placeholder="输入要咨询的内容..."></textarea>
+                                            <textarea id="message" placeholder="输入要咨询的内容..." rows="2"></textarea>
                                             <button onclick="send()" class="btn btn-na mt-2 pull-right">发送</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div class="col-lg-4 col-md-12">
+                                <div class="dashboard-list">
+                                    <h4 class="gray"><i class="fa fa-history"></i> 咨询历史</h4>
+                                    <div class="dashboard-list-static" id="consultation-history" style="max-height: 400px; overflow-y: auto;">
+                                        <p class="text-center text-muted" style="padding: 20px;">加载中...</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -104,5 +163,121 @@
 </html>
 
 <script>
-    window.onload = messageInit;
+    window.onload = function() {
+        messageInit();
+        loadConsultationHistory();
+    };
+</script>
+
+<script>
+    /**
+     * 发送消息（增强版）
+     */
+    function send() {
+        let message = $('#message').val().trim();
+        if (!message) {
+            layer.msg("请输入要咨询的内容");
+            return;
+        }
+
+        // 显示用户消息
+        $('#messages').append("<div class='msg-received msg-sent' style='margin-right: 20px'><div class='msg-content'><p>现在</p><p class='msg'>" + message + "</p></div></div>");
+        messageInit();
+        $('#message').val('');
+
+        // 显示加载状态
+        $('#messages').append("<div class='msg-received' id='loading-msg'><div class='msg-image'><img src='assets/images/team/user-2.jpg' alt='image'></div><div class='msg-content'><p>现在</p><p class='msg'>正在分析您的问题，请稍候...</p></div></div>");
+        messageInit();
+
+        $.ajax({
+            type: "POST",
+            url: "message/query",
+            data: { content: message },
+            dataType: "json",
+            success: function (data) {
+                // 移除加载提示
+                $('#loading-msg').remove();
+
+                if (data['code'] === 'SUCCESS') {
+                    let result = data['data'];
+                    let aiAnswer = result['answer'];
+                    let relatedIllnesses = result['relatedIllnesses'] || [];
+                    let relatedMedicines = result['relatedMedicines'] || [];
+
+                    // 构建AI回复内容
+                    let answerHtml = "<p class='msg'>" + aiAnswer.replace(/\n/g, '<br>') + "</p>";
+
+                    // 添加相关信息展示
+                    if (relatedIllnesses.length > 0 || relatedMedicines.length > 0) {
+                        answerHtml += "<div class='related-info'>";
+                        answerHtml += "<h6><i class='fa fa-link'></i> 参考的本地医学知识库：</h6>";
+
+                        if (relatedIllnesses.length > 0) {
+                            answerHtml += "<div><strong>相关疾病：</strong>";
+                            relatedIllnesses.forEach(function(illness) {
+                                answerHtml += "<span class='tag'>" + illness.illnessName + "</span>";
+                            });
+                            answerHtml += "</div>";
+                        }
+
+                        if (relatedMedicines.length > 0) {
+                            answerHtml += "<div style='margin-top: 6px;'><strong>相关药品：</strong>";
+                            relatedMedicines.forEach(function(medicine) {
+                                answerHtml += "<span class='tag'>" + medicine.medicineName + "</span>";
+                            });
+                            answerHtml += "</div>";
+                        }
+
+                        answerHtml += "</div>";
+                    }
+
+                    $('#messages').append("<div class='msg-received'><div class='msg-image'><img src='assets/images/team/user-2.jpg' alt='image'></div><div class='msg-content'><p>现在</p>" + answerHtml + "</div></div>");
+                    messageInit();
+
+                    // 刷新咨询历史
+                    loadConsultationHistory();
+                } else {
+                    layer.msg(data['message']);
+                    $('#messages').append("<div class='msg-received'><div class='msg-image'><img src='assets/images/team/user-2.jpg' alt='image'></div><div class='msg-content'><p>现在</p><p class='msg' style='color: red;'>查询失败：" + data['message'] + "</p></div></div>");
+                    messageInit();
+                }
+            },
+            error: function() {
+                $('#loading-msg').remove();
+                layer.msg("网络请求失败");
+            }
+        });
+    }
+
+    /**
+     * 加载咨询历史
+     */
+    function loadConsultationHistory() {
+        $.ajax({
+            type: "POST",
+            url: "message/history",
+            dataType: "json",
+            success: function(data) {
+                if (data['code'] === 'SUCCESS' && data['data'] && data['data'].length > 0) {
+                    let historyList = data['data'];
+                    let html = '';
+                    historyList.forEach(function(item) {
+                        let q = item.question;
+                        if (q && q.length > 30) q = q.substring(0, 30) + '...';
+                        let createTime = item.createTime;
+                        html += "<div class='history-item'>";
+                        html += "<div style='font-size: 12px; color: #999; margin-bottom: 4px;'><i class='fa fa-clock-o'></i> " + createTime + "</div>";
+                        html += "<div style='font-weight: bold; font-size: 14px; margin-bottom: 4px;'>" + q + "</div>";
+                        let a = item.answer;
+                        if (a && a.length > 50) a = a.substring(0, 50) + '...';
+                        html += "<div style='font-size: 12px; color: #666;'>" + a + "</div>";
+                        html += "</div>";
+                    });
+                    $('#consultation-history').html(html);
+                } else {
+                    $('#consultation-history').html("<p class='text-center text-muted' style='padding: 20px;'>暂无咨询记录</p>");
+                }
+            }
+        });
+    }
 </script>

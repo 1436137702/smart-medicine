@@ -1,14 +1,7 @@
 /*
 ==========================================================================
-郑重说明：本项目免费开源！原创作者为：薛伟同学，严禁私自出售。
-==========================================================================
-B站账号：薛伟同学
-微信公众号：薛伟同学
-作者博客：http://xuewei.world
-==========================================================================
-陆陆续续总会收到粉丝的提醒，总会有些人为了赚取利益倒卖我的开源项目。
-不乏有粉丝朋友出现钱付过去，那边只把代码发给他就跑路的，最后还是根据线索找到我。。
-希望各位朋友擦亮慧眼，谨防上当受骗！
+智慧医问-智能医药系统 - 数据库初始化脚本
+本科毕业设计项目
 ==========================================================================
 */
 
@@ -21,10 +14,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `feedback`;
 CREATE TABLE `feedback` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `name` varchar(11) DEFAULT NULL COMMENT '反馈用户',
+  `user_id` int(11) DEFAULT NULL COMMENT '反馈用户ID',
+  `name` varchar(50) DEFAULT NULL COMMENT '反馈用户',
   `email` varchar(255) DEFAULT NULL COMMENT '邮箱地址',
   `title` varchar(255) DEFAULT NULL COMMENT '反馈标题',
   `content` text COMMENT '反馈内容',
+  `status` int(1) DEFAULT 0 COMMENT '处理状态：0未处理，1已处理',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -227,9 +222,13 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `pageview`;
 CREATE TABLE `pageview` (
-  `id` int(1) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `pageviews` int(1) DEFAULT NULL COMMENT '浏览量',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `pageviews` int(11) DEFAULT 0 COMMENT '浏览量',
+  `type` int(1) DEFAULT 1 COMMENT '类型：1疾病，2药品',
   `illness_id` int(11) DEFAULT NULL COMMENT '病的id',
+  `medicine_id` int(11) DEFAULT NULL COMMENT '药品id',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
@@ -237,16 +236,16 @@ CREATE TABLE `pageview` (
 -- Records of pageview
 -- ----------------------------
 BEGIN;
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (5, 5, 1);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (6, 4, 13);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (7, 2, 4);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (8, 1, 2);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (9, 1, 3);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (10, 1, 5);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (11, 1, 6);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (12, 2, 7);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (13, 1, 8);
-INSERT INTO `pageview` (`id`, `pageviews`, `illness_id`) VALUES (14, 1, 9);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (5, 5, 1, 1, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (6, 4, 1, 13, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (7, 2, 1, 4, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (8, 1, 1, 2, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (9, 1, 1, 3, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (10, 1, 1, 5, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (11, 1, 1, 6, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (12, 2, 1, 7, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (13, 1, 1, 8, NULL);
+INSERT INTO `pageview` (`id`, `pageviews`, `type`, `illness_id`, `medicine_id`) VALUES (14, 1, 1, 9, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -279,3 +278,21 @@ INSERT INTO `user` (`id`, `user_account`, `user_name`, `user_pwd`, `user_age`, `
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ----------------------------
+-- Table structure for consultation
+-- ----------------------------
+DROP TABLE IF EXISTS `consultation`;
+CREATE TABLE `consultation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` int(11) DEFAULT NULL COMMENT '用户ID',
+  `question` text COMMENT '用户问题',
+  `answer` text COMMENT 'AI回复',
+  `related_illness_ids` varchar(255) DEFAULT NULL COMMENT '关联疾病ID，逗号分隔',
+  `related_medicine_ids` varchar(255) DEFAULT NULL COMMENT '关联药品ID，逗号分隔',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

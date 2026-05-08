@@ -1,6 +1,7 @@
-package world.xuewei.entity;
+﻿package world.xuewei.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.Date;
 /**
  * 药品实体
  *
- * @author XUEW
+ * 智慧医问-智能医药系统 - 本科毕业设计项目
  */
 @Data
 @NoArgsConstructor
@@ -88,5 +89,11 @@ public class Medicine {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 浏览量（非数据库字段）
+     */
+    @TableField(exist = false)
+    private Integer pageviews;
 
 }

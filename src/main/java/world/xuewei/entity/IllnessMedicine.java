@@ -13,7 +13,6 @@ import java.util.Date;
 /**
  * 疾病药品实体
  *
- * @author XUEW
  */
 @Data
 @NoArgsConstructor

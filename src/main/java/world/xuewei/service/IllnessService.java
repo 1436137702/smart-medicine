@@ -122,15 +122,16 @@ public class IllnessService extends BaseService<Illness> {
         List<IllnessMedicine> illnessMedicines = illnessMedicineDao.selectList(new QueryWrapper<IllnessMedicine>().eq("illness_id", id));
         List<Medicine> list = new ArrayList<>(4);
         Map<String, Object> map = new HashMap<>(4);
-        Pageview illness_id = pageviewDao.selectOne(new QueryWrapper<Pageview>().eq("illness_id", id));
-        if (Assert.isEmpty(illness_id)) {
-            illness_id = new Pageview();
-            illness_id.setIllnessId(id);
-            illness_id.setPageviews(1);
-            pageviewDao.insert(illness_id);
+        Pageview pageInfo = pageviewDao.selectOne(new QueryWrapper<Pageview>().eq("type", 1).eq("illness_id", id));
+        if (Assert.isEmpty(pageInfo)) {
+            pageInfo = new Pageview();
+            pageInfo.setType(1);
+            pageInfo.setIllnessId(id);
+            pageInfo.setPageviews(1);
+            pageviewDao.insert(pageInfo);
         } else {
-            illness_id.setPageviews(illness_id.getPageviews() + 1);
-            pageviewDao.updateById(illness_id);
+            pageInfo.setPageviews(pageInfo.getPageviews() + 1);
+            pageviewDao.updateById(pageInfo);
         }
         map.put("illness", illness);
 
@@ -150,5 +151,31 @@ public class IllnessService extends BaseService<Illness> {
 
     public Illness getOne(QueryWrapper<Illness> queryWrapper) {
         return illnessDao.selectOne(queryWrapper);
+    }
+
+    /**
+     * 获取热门疾病排行（按浏览量降序）
+     */
+    public List<Map<String, Object>> getHotIllnessList(int limit) {
+        QueryWrapper<Pageview> pvWrapper = new QueryWrapper<>();
+        pvWrapper.eq("type", 1);
+        pvWrapper.isNotNull("illness_id");
+        pvWrapper.orderByDesc("pageviews");
+        pvWrapper.last("LIMIT " + limit);
+        List<Pageview> pageviews = pageviewDao.selectList(pvWrapper);
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Pageview pv : pageviews) {
+            Illness illness = illnessDao.selectById(pv.getIllnessId());
+            if (illness != null) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", illness.getId());
+                map.put("illnessName", illness.getIllnessName());
+                map.put("kindId", illness.getKindId());
+                map.put("pageviews", pv.getPageviews());
+                result.add(map);
+            }
+        }
+        return result;
     }
 }

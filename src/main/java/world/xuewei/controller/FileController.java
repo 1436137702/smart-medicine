@@ -16,7 +16,6 @@ import java.io.IOException;
 /**
  * 文件控制器
  *
- * @author XUEW
  */
 @RestController
 @RequestMapping("/file")

@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * 响应结果
  *
- * @author XUEW
  */
 @Data
 @Builder

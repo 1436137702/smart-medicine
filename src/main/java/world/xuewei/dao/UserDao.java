@@ -7,7 +7,6 @@ import world.xuewei.entity.User;
 /**
  * 用户数据库访问
  *
- * @author XUEW
  */
 @Repository
 public interface UserDao extends BaseMapper<User> {

@@ -7,7 +7,6 @@ import world.xuewei.entity.Pageview;
 /**
  * 分页数据库访问
  *
- * @author XUEW
  */
 @Repository
 public interface PageviewDao extends BaseMapper<Pageview> {

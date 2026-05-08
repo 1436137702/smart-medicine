@@ -1,4 +1,4 @@
-package world.xuewei.config;
+﻿package world.xuewei.config;
 
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * MVC 配置
  *
- * @author XUEW
+ * 智慧医问-智能医药系统 - 本科毕业设计项目
  */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
@@ -29,6 +29,8 @@ public class MvcConfig implements WebMvcConfigurer, ErrorPageRegistrar {
 
         registry.addViewController("/feedback.html").setViewName("feedback");
         registry.addViewController("/empty.html").setViewName("empty");
+        
+        // 注意：不要在这里注册/login/register，这会覆盖REST控制器的POST映射
     }
 
     /**

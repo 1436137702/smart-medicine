@@ -3,7 +3,6 @@ package world.xuewei.constant;
 /**
  * 常量类
  *
- * @author XUEW
  */
 public class MedicalConstants {
 

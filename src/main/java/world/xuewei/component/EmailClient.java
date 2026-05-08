@@ -13,7 +13,6 @@ import javax.mail.internet.MimeMessage;
 /**
  * 邮件客户端
  *
- * @author XUEW
  */
 @Component
 public class EmailClient {

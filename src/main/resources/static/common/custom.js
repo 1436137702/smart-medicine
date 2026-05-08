@@ -453,6 +453,27 @@ function deleteFeedback(id) {
 }
 
 /**
+ * 标记反馈为已处理
+ * @param id
+ */
+function markProcessed(id) {
+    $.ajax({
+        type: "POST",
+        url: "feedback/markProcessed",
+        data: {
+            id: id,
+        },
+        dataType: "json",
+        success: function (data) {
+            layer.msg(data['message']);
+            if (data['code'] === 'SUCCESS') {
+                setTimeout('reload()', 2000);
+            }
+        }
+    });
+}
+
+/**
  * 初始化聊天窗口滚动条
  */
 function messageInit() {

@@ -8,7 +8,6 @@ import world.xuewei.entity.Illness;
 /**
  * 疾病控制器
  *
- * @author XUEW
  */
 @RestController
 @RequestMapping("illness")
