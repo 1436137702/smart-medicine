@@ -1,4 +1,4 @@
-﻿package world.xuewei.controller;
+package world.xuewei.controller;
 
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-﻿package world.xuewei.service;
+package world.xuewei.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;

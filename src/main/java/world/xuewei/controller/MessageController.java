@@ -1,4 +1,4 @@
-﻿package world.xuewei.controller;
+package world.xuewei.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.PostMapping;
