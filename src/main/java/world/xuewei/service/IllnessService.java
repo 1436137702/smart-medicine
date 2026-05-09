@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * 疾病服务类
  *
- * @author XUEW
+ * 智慧医问-智能医药系统 - 本科毕业设计项目
  */
 @Service
 public class IllnessService extends BaseService<Illness> {
@@ -71,6 +71,11 @@ public class IllnessService extends BaseService<Illness> {
 
     public Map<String, Object> findIllness(Integer kind, String illnessName, Integer page) {
 
+        if (page == null || page <= 0) {
+            page = 1;
+        }
+        int offset = (page - 1) * 9;
+
         Map<String, Object> map = new HashMap<>(4);
         QueryWrapper<Illness> illnessQueryWrapper = new QueryWrapper<>();
         if (Assert.notEmpty(illnessName)) {
@@ -85,19 +90,21 @@ public class IllnessService extends BaseService<Illness> {
         }
         if (kind != null) {
             if (Assert.notEmpty(illnessName)) {
-                illnessQueryWrapper.last("and (kind_id = " + kind + ") ORDER BY create_time DESC limit " + (page - 1) * 9 + "," + page * 9);
+                illnessQueryWrapper.last("and (kind_id = " + kind + ") ORDER BY create_time DESC limit " + offset + "," + page * 9);
             } else {
                 illnessQueryWrapper.eq("kind_id", kind);
                 illnessQueryWrapper.orderByDesc("create_time");
-                illnessQueryWrapper.last("limit " + (page - 1) * 9 + "," + page * 9);
+                illnessQueryWrapper.last("limit " + offset + "," + page * 9);
             }
         } else {
             illnessQueryWrapper.orderByDesc("create_time");
-            illnessQueryWrapper.last("limit " + (page - 1) * 9 + "," + page * 9);
-
+            illnessQueryWrapper.last("limit " + offset + "," + page * 9);
         }
-        int size = illnessDao.selectMaps(illnessQueryWrapper).size();
         List<Map<String, Object>> list = illnessDao.selectMaps(illnessQueryWrapper);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        int size = list.size();
         list.forEach(l -> {
             Integer id = MapUtil.getInt(l, "id");
             Pageview pageInfo = pageviewDao.selectOne(new QueryWrapper<Pageview>().eq("illness_id", id));

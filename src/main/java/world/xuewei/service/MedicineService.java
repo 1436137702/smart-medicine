@@ -70,17 +70,26 @@ public class MedicineService extends BaseService<Medicine> {
 
     public Map<String, Object> getMedicineList(String nameValue, Integer page) {
 
-        List<Medicine> medicineList = null;
+        if (page == null || page <= 0) {
+            page = 1;
+        }
+
+        List<Medicine> medicineList;
         Map<String, Object> map = new HashMap<>(4);
+        int offset = (page - 1) * 9;
         if (Assert.notEmpty(nameValue)) {
             medicineList = medicineDao.selectList(new QueryWrapper<Medicine>().
                     like("medicine_name", nameValue)
                     .or().like("keyword", nameValue)
                     .or().like("medicine_effect", nameValue)
-                    .last("limit " + (page - 1) * 9 + "," + page * 9));
+                    .last("limit " + offset + "," + page * 9));
         } else {
             medicineList = medicineDao.selectList(new QueryWrapper<Medicine>()
-                    .last("limit " + (page - 1) * 9 + "," + page * 9));
+                    .last("limit " + offset + "," + page * 9));
+        }
+
+        if (medicineList == null) {
+            medicineList = new ArrayList<>();
         }
 
         for (Medicine medicine : medicineList) {
