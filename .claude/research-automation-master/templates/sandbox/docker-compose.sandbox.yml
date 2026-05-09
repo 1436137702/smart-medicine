@@ -1,0 +1,56 @@
+# =============================================================================
+# ricet Overnight Sandbox — Docker Compose
+# =============================================================================
+# SETUP: Before first use, copy and edit the .env file:
+#   cp .env.example .env
+#
+# By default uses Dockerfile.python. For Docker-in-Docker, change the
+# dockerfile line and uncomment `privileged: true`.
+# =============================================================================
+
+services:
+  sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${CONTAINER_NAME:-ricet-sandbox}
+    # privileged: true                  # Uncomment for Docker-in-Docker
+    environment:
+      - SANDBOX_TIMEOUT_HOURS=${SANDBOX_TIMEOUT_HOURS:-10}
+      - CONTAINER_NAME=${CONTAINER_NAME:-ricet-sandbox}
+      - HOST_UID=${HOST_UID:-1000}
+      - HOST_GID=${HOST_GID:-1000}
+    volumes:
+      # Project source (read-only, copied to workspace on start)
+      - ../:/project-source:ro
+      # Claude credentials (read-only, copied with chown on start)
+      - ${HOME}/.claude:/claude-source:ro
+      # Workspace: bind mount for VS Code visibility (override with WORKSPACE_PATH)
+      - ${WORKSPACE_PATH:-sandbox-workspace}:/workspace
+      # Persistent logs
+      - sandbox-logs:/agent-logs
+    deploy:
+      resources:
+        limits:
+          cpus: '${SANDBOX_CPUS:-4}'
+          memory: ${SANDBOX_MEMORY:-8G}
+        reservations:
+          cpus: '1'
+          memory: 2G
+    networks:
+      - sandbox-net
+    restart: "no"
+    healthcheck:
+      test: ["CMD", "test", "-f", "/agent-logs/sandbox.log"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  sandbox-net:
+    driver: bridge
+    internal: false   # Needs internet for Claude API, pip install, etc.
+
+volumes:
+  sandbox-workspace:     # Only used if WORKSPACE_PATH is not set
+  sandbox-logs:

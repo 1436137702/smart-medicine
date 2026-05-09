@@ -1,0 +1,401 @@
+# Architecture
+
+This page describes the system architecture, module relationships, and data flow within ricet.
+
+---
+
+## High-Level Architecture
+
+```mermaid
+graph TB
+    User["User / Terminal"]
+    CLI["cli/main.py<br/>Typer CLI"]
+    Dashboard["cli/dashboard.py<br/>TUI Dashboard"]
+
+    subgraph Core["Core Modules"]
+        Agents["agents.py<br/>Orchestration"]
+        Session["session.py<br/>Session Mgmt"]
+        Tokens["tokens.py<br/>Budget Tracking"]
+        Knowledge["knowledge.py<br/>Encyclopedia"]
+        MCPs["mcps.py<br/>MCP Discovery"]
+        Router["model_router.py<br/>Model Selection"]
+        Security["security.py<br/>Secret Scanning"]
+        Paper["paper.py<br/>LaTeX Pipeline"]
+        Repro["reproducibility.py<br/>Run Logging"]
+        Resources["resources.py<br/>Monitoring"]
+        Notify["notifications.py<br/>Alerts"]
+        Env["environment.py<br/>System Discovery"]
+        Onboard["onboarding.py<br/>Project Init"]
+        CrossRepo["cross_repo.py<br/>Multi-Repo"]
+        Auto["autonomous.py<br/>Scheduled Tasks"]
+        Mobile["mobile.py<br/>Phone API + PWA"]
+        Social["social_media.py<br/>Publishing"]
+        Adopt["adopt.py<br/>Repo Adoption"]
+        Voice["voice.py<br/>Audio Input"]
+        Sandbox["sandbox.py<br/>Docker Sandbox"]
+        Slides["slides.py<br/>Slide Generation"]
+        CredStore["credential_store.py<br/>Global Creds"]
+    end
+
+    Bridge["claude_flow.py<br/>Claude-Flow Bridge"]
+    ClaudeFlow["claude-flow v3<br/>(optional)"]
+    ClaudeCLI["Claude Code CLI"]
+    Templates["templates/<br/>Project Scaffolding"]
+
+    User --> CLI
+    User --> Dashboard
+    User -.-> Mobile
+    CLI --> Agents
+    CLI --> Session
+    CLI --> Onboard
+    CLI --> Paper
+    CLI --> Mobile
+    CLI --> Social
+    CLI --> Adopt
+    CLI --> Voice
+    CLI --> Sandbox
+    CLI --> Slides
+    Onboard --> CredStore
+    Agents --> Router
+    Agents --> Tokens
+    Agents --> Bridge
+    Session --> Bridge
+    Knowledge --> Bridge
+    MCPs --> Bridge
+    Security --> Bridge
+    Resources --> Bridge
+    CrossRepo --> Bridge
+    Bridge --> ClaudeFlow
+    Bridge -.->|fallback| ClaudeCLI
+    Onboard --> Templates
+    Agents --> ClaudeCLI
+    Auto --> Agents
+    Notify --> User
+```
+
+---
+
+## Module Dependency Map
+
+The following diagram shows which core modules depend on which:
+
+```mermaid
+graph LR
+    CF["claude_flow.py"]
+
+    agents --> CF
+    session --> CF
+    tokens --> CF
+    knowledge --> CF
+    mcps --> CF
+    security --> CF
+    resources --> CF
+    cross_repo --> CF
+    model_router --> CF
+
+    agents --> tokens
+    agents --> model_router
+
+    paper -.-> knowledge
+    reproducibility -.-> security
+
+    autonomous --> agents
+    onboarding -.-> environment
+```
+
+**Solid arrows** indicate direct imports. **Dashed arrows** indicate indirect or optional relationships.
+
+### Key Observations
+
+1. **`claude_flow.py` is the central integration point.** Nine modules import from it. Every module follows the same fallback pattern: try the bridge, catch `ClaudeFlowUnavailable`, fall back to a local implementation.
+
+2. **`agents.py` is the primary orchestrator.** It uses `tokens.py` for budget checks and `model_router.py` for model selection before dispatching tasks.
+
+3. **Domain-specific modules are isolated.** `paper.py`, `reproducibility.py`, `voice.py`, `style_transfer.py`, `meta_rules.py`, and `automation_utils.py` do not depend on the claude-flow bridge and operate independently.
+
+4. **`onboarding.py` is entry-only.** It is called during `ricet init` and does not participate in ongoing session execution.
+
+---
+
+## Directory Structure
+
+```
+research-automation/
+├── cli/                          # User-facing CLI
+│   ├── main.py                   # Typer CLI: init, start, overnight, status, etc.
+│   ├── dashboard.py              # Rich TUI dashboard
+│   └── gallery.py                # Figure gallery viewer
+│
+├── core/                         # Business logic (50+ modules)
+│   ├── agents.py                 # Task DAG execution, output ring buffers
+│   ├── session.py                # Session CRUD, snapshots
+│   ├── tokens.py                 # Token estimation, budget checks
+│   ├── knowledge.py              # Encyclopedia CRUD, vector search
+│   ├── mcps.py                   # MCP tier loading, classification
+│   ├── model_router.py           # Complexity classification, model selection
+│   ├── security.py               # Secret scanning, immutable files
+│   ├── paper.py                  # Figures, citations, LaTeX build
+│   ├── reproducibility.py        # Run logs, artifact registry, hashing
+│   ├── resources.py              # CPU/RAM/GPU monitoring, checkpoints
+│   ├── notifications.py          # Slack, email, desktop alerts
+│   ├── environment.py            # System discovery, conda management
+│   ├── onboarding.py             # Interactive init questionnaire
+│   ├── cross_repo.py             # Multi-repo linking, coordinated commits
+│   ├── autonomous.py             # Scheduled routines, audit logging
+│   ├── claude_flow.py            # Bridge to claude-flow v3
+│   ├── credential_store.py       # Global credential store (~/.ricet/credentials.env)
+│   ├── sandbox.py                # Docker sandbox orchestration
+│   ├── slides.py                 # Slide deck generation orchestration
+│   ├── style_transfer.py         # Writing style analysis, plagiarism check
+│   ├── voice.py                  # Audio transcription
+│   ├── meta_rules.py             # Rule extraction from conversations
+│   ├── automation_utils.py       # Data helpers, experiment runners
+│   ├── auto_debug.py             # Automatic error diagnosis
+│   ├── auto_commit.py            # Auto-commit & push after operations
+│   ├── auto_docs.py              # Documentation generation
+│   ├── auto_test.py              # Test generation
+│   ├── browser.py                # Browser preview
+│   ├── doability.py              # Task feasibility assessment
+│   ├── prompt_suggestions.py     # AI-powered next-step suggestions
+│   ├── mobile.py                 # Mobile HTTPS API server + auth + TLS
+│   ├── mobile_pwa.py             # PWA HTML/CSS/JS/manifest/service worker
+│   ├── social_media.py           # Medium, LinkedIn, Twitter/X publishing
+│   ├── adopt.py                  # Repository adoption (fork + scaffold)
+│   ├── code_index.py             # Code indexing for semantic search
+│   ├── collaboration.py          # Multi-user sync, merge, morning-sync
+│   ├── promotion.py              # Lab → stable promotion with provenance
+│   ├── slack_delivery.py         # Slack file uploads via v2 API
+│   ├── updater.py                # Cascading self-update for existing projects
+│   ├── report.py                 # Report generation
+│   ├── rag_mcp.py                # RAG index for MCP discovery
+│   ├── lazy_mcp.py               # Lazy MCP loading
+│   ├── markdown_commands.py      # Markdown command parsing
+│   ├── devops.py                 # Infrastructure automation
+│   ├── website.py                # GitHub Pages builder
+│   ├── two_repo.py               # Dual-repo management
+│   ├── multi_project.py          # Project workspace
+│   ├── prompt_queue.py           # Task queue management
+│   ├── task_spooler.py           # Background task execution
+│   ├── git_worktrees.py          # Git worktree management
+│   └── verification.py           # Result verification
+│
+├── templates/                    # Copied into new projects
+│   ├── .claude/                  # CLAUDE.md project instructions + 8 research skills
+│   ├── config/                   # MCP config, settings template
+│   │   └── mcp-nucleus.json      # 34 MCPs installed at startup
+│   ├── knowledge/                # GOAL.md, ENCYCLOPEDIA.md, CONSTRAINTS.md
+│   ├── paper/                    # main.tex, references.bib, Makefile
+│   ├── sandbox/                  # Dockerfile, docker-compose, martinprompt
+│   └── slides/                   # slide_utils.py, slides_task.md, example script
+│
+├── defaults/                     # Shared defaults (not copied into projects)
+│   ├── PHILOSOPHY.md             # Core research principles
+│   ├── LEGISLATION.md            # Non-negotiable rules (18 sections)
+│   ├── MCP_CATALOG.md            # Searchable MCP catalog
+│   ├── MCP_NUCLEUS.json          # Master MCP config
+│   └── raggable_mcps.md          # MCP catalog indexed for RAG
+│
+├── docker/                       # Container setup
+│   ├── Dockerfile                # Ubuntu 24.04 + full toolchain
+│   ├── docker-compose.yml        # Volume mounts, resource limits
+│   └── permissions.md            # Permission level documentation
+│
+├── scripts/                      # Shell scripts
+│   ├── setup.sh                  # Initial setup
+│   ├── setup_claude_flow.sh      # claude-flow installation
+│   ├── overnight.sh              # Basic overnight runner
+│   ├── overnight-enhanced.sh     # Enhanced overnight with recovery
+│   └── interactive.sh            # Interactive session launcher
+│
+├── tests/                        # Test suite
+├── docs/                         # Documentation
+└── pyproject.toml                # Package metadata and dependencies
+```
+
+---
+
+## Data Flow: Project Initialization
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CLI as cli/main.py
+    participant OB as core/onboarding.py
+    participant ENV as core/environment.py
+    participant T as templates/
+    participant G as Git + GitHub
+
+    U->>CLI: ricet init my-project
+    CLI->>OB: check_and_install_packages()
+    CLI->>ENV: detect_system_for_init()
+    ENV-->>CLI: OS, CPU, GPU, RAM, Docker, Conda
+    CLI->>OB: auto_install_claude_flow()
+    CLI->>OB: collect_answers(system_info)
+    OB->>U: Notification, journal, website, mobile
+    U->>OB: Answers
+    CLI->>OB: collect_credentials()
+    OB->>U: Guided credential prompts (Enter to skip)
+    U->>OB: API keys
+    OB-->>CLI: OnboardingAnswers + credentials
+    CLI->>T: Copy templates to my-project/
+    CLI->>OB: setup_workspace()
+    CLI->>OB: write_settings() + write_goal_file()
+    CLI->>OB: write_env_file() + write_env_example()
+    CLI->>ENV: create_project_env()
+    CLI->>OB: infer_packages_from_goal()
+    CLI->>OB: generate_goal_todos() + generate_goal_folders()
+    CLI->>G: git init, commit, create GitHub repo
+    CLI->>U: Project ready + folder guide
+```
+
+---
+
+## Data Flow: Task Execution (Skill-Based)
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CC as Claude Code
+    participant SK as Skill (.md)
+    participant ML as Meta-Learn Hook
+    participant K as Knowledge Files
+
+    U->>CC: /falsify lab/analysis.py
+    CC->>SK: Load .claude/skills/falsify.md
+    SK->>CC: Structured workflow (leakage → stats → code → methodology)
+    CC->>CC: Execute each step
+    CC->>K: Update ENCYCLOPEDIA.md (findings)
+    CC-->>U: Falsification report
+    U->>CC: "don't mock the database in tests"
+    CC-->>U: Acknowledged
+    ML->>K: Append rule to RULES.md (auto)
+```
+
+---
+
+## Data Flow: Overnight Mode
+
+```mermaid
+sequenceDiagram
+    participant CLI as cli/main.py
+    participant TODO as state/TODO.md
+    participant CC as Claude Code CLI
+    participant H as Hooks
+    participant N as Notifications
+    participant DONE as state/DONE
+
+    CLI->>TODO: Read task list
+    loop Each iteration
+        CLI->>CC: Execute next task
+        CC->>H: pre-task.sh
+        CC->>CC: Process task
+        CC->>H: post-task.sh (auto-commit)
+        alt Error
+            CC->>H: on-error.sh (snapshot + notify)
+            H->>N: Send error notification
+        end
+        CLI->>DONE: Check for completion signal
+    end
+    CLI->>N: Send completion notification
+```
+
+---
+
+## Claude-Flow Integration Pattern
+
+Every module that integrates with claude-flow follows the same pattern:
+
+```python
+from core.claude_flow import ClaudeFlowUnavailable, _get_bridge
+
+def some_function(args):
+    # Try claude-flow first
+    try:
+        bridge = _get_bridge()
+        result = bridge.some_method(args)
+        return adapt_result(result)
+    except ClaudeFlowUnavailable:
+        pass
+
+    # Fall back to local implementation
+    return local_implementation(args)
+```
+
+This ensures the system works identically with or without claude-flow installed. The bridge is a singleton (`_get_bridge()`) that checks for `npx` and `claude-flow@v3alpha` availability on first call.
+
+### Skills vs Agents
+
+ricet v1 replaced the programmatic agent hierarchy with skill-based slash commands. The old agent types (RESEARCHER, CODER, REVIEWER, FALSIFIER, WRITER, CLEANER) are now research skills deployed as Markdown files to `.claude/skills/`. Claude Code loads these directly when the user invokes a slash command.
+
+The `core/agents.py` module still provides Task DAG execution, output ring buffers (for mobile), and the claude-flow bridge, but task routing is now handled by Claude's native skill system rather than programmatic dispatch.
+
+| Old Agent | New Skill |
+|-----------|-----------|
+| Researcher | `/lit-review` |
+| Reviewer | `/experiment-review` |
+| Writer | `/paper-draft` |
+| Falsifier | `/falsify` |
+| Coder | `/reproduce` |
+| Cleaner | `/research-retro` |
+| Slide-Maker | `/slides` |
+| Master (overnight) | `/overnight` |
+
+---
+
+## Security Architecture
+
+```mermaid
+graph TB
+    subgraph Permissions
+        Safe["SAFE<br/>Read, write workspace,<br/>run Python, git ops"]
+        Moderate["MODERATE<br/>Network requests,<br/>create directories"]
+        Elevated["ELEVATED<br/>Delete files, modify config,<br/>push to remote"]
+        Dangerous["DANGEROUS<br/>Sudo, modify secrets,<br/>spend money"]
+    end
+
+    subgraph Guards
+        SecretScan["Secret Scanning<br/>(regex + claude-flow)"]
+        Immutable["Immutable File<br/>Protection"]
+        Audit["Audit Logging<br/>(state/audit.log)"]
+        Confirm["Confirmation<br/>Gates"]
+    end
+
+    Safe --> SecretScan
+    Moderate --> Audit
+    Elevated --> Confirm
+    Dangerous --> Confirm
+    Immutable --> Safe
+```
+
+---
+
+## MCP Tier Architecture
+
+```mermaid
+graph TB
+    Task["Task Description"]
+    Classify["classify_task()"]
+
+    T0["Tier 0: claude-flow<br/>(if available)"]
+    T1["Tier 1: Essential<br/>paper-search, arxiv, git,<br/>github, filesystem, memory"]
+    T2["Tier 2: Data<br/>postgres, sqlite, duckdb, chroma"]
+    T3["Tier 3: ML/DL<br/>jupyter, huggingface, mlflow"]
+    T4["Tier 4: Math<br/>wolfram, sympy"]
+    T5["Tier 5: Paper<br/>latex, overleaf"]
+    T6["Tier 6: Comms<br/>slack, gmail, sendgrid"]
+    T7["Tier 7: Cloud<br/>aws, docker, terraform"]
+    T8["Tier 8: Startup<br/>vercel, gamma, stripe, notion"]
+
+    Task --> Classify
+    Classify --> T0
+    Classify --> T1
+    Classify -->|"database, sql"| T2
+    Classify -->|"model, training"| T3
+    Classify -->|"math, equation"| T4
+    Classify -->|"paper, latex"| T5
+    Classify -->|"notify, email"| T6
+    Classify -->|"deploy, aws"| T7
+    Classify -->|"website, slides"| T8
+```
+
+Tier 1 is always loaded. Higher tiers are activated by Opus-powered semantic analysis of the task description, with simple keyword matching as a last-resort fallback for offline environments.

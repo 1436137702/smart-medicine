@@ -1,0 +1,154 @@
+%!LW recipe=lualatex
+% Template by Albert Dominguez (@AlbertDominguez), Gioele La Manno
+% (@gioelelm), and Martin Weigert (@maweigert).
+% See: https://github.com/weigertlab/manuscript_lipiddevatlas
+\documentclass[11pt, a4paper]{article}
+
+% ==============================================================================
+% MANUSCRIPT TODO LIST
+% ==============================================================================
+%
+% ---- METHODS ----
+% [ ] M1: [Method section 1]
+% [ ] M2: [Method section 2]
+% [ ] M3: [Method section 3]
+%
+% ---- FIGURES: FIRST DRAFT ----
+% [ ] Fig 1 draft: [Description]
+% [ ] Fig 2 draft: [Description]
+% [ ] Fig 3 draft: [Description]
+%
+% ---- FIGURES: FINALIZE ----
+% [ ] Fig 1 finalize: Polish panels, colors, annotations
+% [ ] Fig 2 finalize: Polish panels, colors, annotations
+% [ ] Fig 3 finalize: Polish panels, colors, annotations
+%
+% ---- FIGURE LEGENDS ----
+% [ ] Write legend for Fig 1
+% [ ] Write legend for Fig 2
+% [ ] Write legend for Fig 3
+%
+% ---- RESULTS SUBSECTIONS (first good draft) ----
+% [ ] R1: [Results section 1]
+% [ ] R2: [Results section 2]
+% [ ] R3: [Results section 3]
+%
+% ---- DISCUSSION ----
+% [ ] Discussion: First draft
+% [ ] Discussion: Revise and polish
+%
+% ---- SUPPLEMENTARY FIGURES ----
+% [ ] Supp Fig 1 draft: [Description]
+% [ ] Supp Fig 2 draft: [Description]
+%
+% ==============================================================================
+
+% ==============================================================================
+% DOCUMENT SETUP
+% ==============================================================================
+\input{preamble}    % Packages, bibliography, hyphenation
+\input{layout}      % Fonts, geometry, headers, decorations
+\input{commands}    % Article metadata, figure commands
+\input{definitions} % Math macros and shortcuts
+
+% ==============================================================================
+% BEGIN DOCUMENT
+% ==============================================================================
+\begin{document}
+
+\date{}
+\maketitle
+
+\vspace{-13mm}
+\begingroup
+% Hyphenation settings for abstract
+\hyphenpenalty=300
+\exhyphenpenalty=300
+\pretolerance=50
+\tolerance=2000
+\emergencystretch=1em
+\lefthyphenmin=3
+\righthyphenmin=3
+
+\noindent{\semiboldfont\fontsize{10.5}{12}\selectfont
+% Abstract
+[Write your abstract here. This should be a concise summary of your work, typically 150-300 words, covering the background, methods, key findings, and conclusions.]
+}
+\par
+\endgroup
+
+\vspace{1mm}
+
+\noindent{
+\fontsize{9pt}{10pt}\selectfont \textcolor{gray}{\Letter~Correspondence to:}\\{}
+[Author initials] (\textcolor{linkblue}{email@institution.edu})
+}
+
+\vspace{-2mm}
+
+% ==============================================================================
+% MAIN CONTENT
+% ==============================================================================
+
+\linenumbers
+\begin{multicols*}{2}
+
+\setlength{\parindent}{0pt}
+\section*{Introduction}
+
+[Write your introduction here. Establish the context, explain the problem or gap in knowledge, and state your objectives.]
+
+
+
+\section*{Results}
+
+%% SUBSECTION 1
+\subsubsection{[Results subsection 1 title]}
+
+[Write your first results subsection here.]
+
+% \insertfigure{figures/Fig1.png}{Figure 1 title}{\textbf{(a)} Panel a description. \textbf{(b)} Panel b description.}
+
+
+%% SUBSECTION 2
+\subsubsection{[Results subsection 2 title]}
+
+[Write your second results subsection here.]
+
+% \insertfigure{figures/Fig2.pdf}{Figure 2 title}{\textbf{(a)} Panel a description. \textbf{(b)} Panel b description.}
+
+
+%% SUBSECTION 3
+\subsubsection{[Results subsection 3 title]}
+
+[Write your third results subsection here.]
+
+% \insertfigure{figures/Fig3.pdf}{Figure 3 title}{\textbf{(a)} Panel a description. \textbf{(b)} Panel b description.}
+
+
+
+\section*{Discussion}
+
+[Write your discussion here. Interpret your findings, compare with existing literature, discuss limitations, and suggest future directions.]
+
+
+\subsection*{Acknowledgements}
+
+We thank ...
+\end{multicols*}
+
+
+\clearpage
+\begin{multicols*}{2}
+\input{methods}
+
+\printbibliography
+
+
+\setcounter{figure}{0}
+% \insertsupfigure{figures/sup1.ai}{Supplementary Figure 1 title.}{Description of supplementary figure panels.}
+
+
+\end{multicols*}
+
+\end{document}

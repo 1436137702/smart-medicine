@@ -1,0 +1,85 @@
+# =============================================================================
+# ricet  —  docker compose up
+# =============================================================================
+#
+# Quick start:
+#   1. A Claude subscription (Pro or Team) is required. Run `claude auth login` on the host.
+#      (Optional fallback for CI/headless: set ANTHROPIC_API_KEY in .env)
+#   2. docker compose up
+#   3. Open http://localhost:7681 in your browser
+#
+# Services:
+#   app   — main research environment (web terminal on :7681)
+#   docs  — GitHub Pages preview server  (on :4000)
+# =============================================================================
+
+services:
+  # --------------------------------------------------------------------------
+  # Main ricet container
+  # --------------------------------------------------------------------------
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: ricet
+    hostname: ricet
+
+    # Default mode: web terminal
+    command: ["--web"]
+
+    ports:
+      - "${TTYD_PORT:-7681}:7681"
+
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}    # Optional fallback for CI/headless; prefer `claude auth login`
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - TTYD_PORT=7681
+
+    volumes:
+      # Mount a local workspace so work persists across restarts
+      - ${WORKSPACE_DIR:-./workspace}:/workspace
+      # Share git config for commits inside the container
+      - ~/.gitconfig:/root/.gitconfig:ro
+      # Mount Claude auth so browser login works inside the container
+      - ${CLAUDE_AUTH_DIR:-~/.claude}:/root/.claude:ro
+      # Mount Claude auth for non-root user (ricet) used by --docker flag
+      - ${CLAUDE_AUTH_DIR:-~/.claude}:/home/ricet/.claude:ro
+
+    # Keep the container running even if ttyd restarts
+    restart: unless-stopped
+
+    # Resource limits (adjust for your machine)
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 2G
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7681/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # --------------------------------------------------------------------------
+  # Docs preview (GitHub Pages / Jekyll)
+  # --------------------------------------------------------------------------
+  docs:
+    image: jekyll/jekyll:4
+    container_name: ricet-docs
+    command: >
+      bash -c "
+        cd /srv/jekyll &&
+        if [ -f Gemfile ]; then bundle install; fi &&
+        jekyll serve --host 0.0.0.0 --port 4000 --livereload --force_polling
+      "
+    ports:
+      - "${DOCS_PORT:-4000}:4000"
+    volumes:
+      - ../docs:/srv/jekyll:rw
+    profiles:
+      - docs
+    restart: unless-stopped

@@ -1,0 +1,89 @@
+% ==============================================================================
+% PREAMBLE - Package imports and basic settings
+% ==============================================================================
+
+% Core packages
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{calc}
+\usepackage[base]{babel}
+\usepackage{lipsum}
+\usepackage{authblk}
+\usepackage{xcolor}
+\usepackage{amsfonts}
+\usepackage{dsfont}
+\usepackage{eso-pic}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{ragged2e}
+\usepackage{marvosym}
+\usepackage{fontspec}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{pifont}
+\usepackage{interval}
+\usepackage{float}
+\usepackage[skip=2pt]{caption}
+\usepackage{subcaption}
+\usepackage{pdfpages}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{blindtext}
+\usepackage{xr}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\usepackage[left]{lineno}
+
+% ==============================================================================
+% BIBLIOGRAPHY
+% ==============================================================================
+\usepackage[backend=biber, sorting=none, date=year,
+style=numeric-comp, isbn=false, doi=false,
+giveninits=true,
+url=false]{biblatex}
+
+\addbibresource{literature.bib}
+
+\renewcommand{\UrlFont}{\ttfamily\small}
+
+\AtEveryBibitem{
+  \clearfield{url}
+}
+\renewcommand*{\bibfont}{\fontsize{10}{11.6}\selectfont}
+
+% Remove indentation in bibliography
+\defbibenvironment{bibliography}
+  {\list
+     {\printtext[labelnumberwidth]{%
+         \printfield{prefixnumber}%
+         \printfield{labelnumber}}}
+     {\setlength{\leftmargin}{\labelnumberwidth}%
+      \setlength{\itemindent}{0pt}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}}}
+  {\endlist}
+  {\item}
+
+% ==============================================================================
+% HYPHENATION SETTINGS
+% ==============================================================================
+\hyphenpenalty=800
+\exhyphenpenalty=900
+\finalhyphendemerits=12000
+\lefthyphenmin=3
+\righthyphenmin=3
+\emergencystretch=1em
+
+% ==============================================================================
+% LINE NUMBERS
+% ==============================================================================
+\renewcommand\linenumberfont{\normalfont\tiny\sffamily\color{lightgray}}
+\setlength\linenumbersep{2pt}
+\modulolinenumbers[5]
+
+% ==============================================================================
+% GRAPHICS
+% ==============================================================================
+\DeclareGraphicsRule{.ai}{pdf}{.ai}{}

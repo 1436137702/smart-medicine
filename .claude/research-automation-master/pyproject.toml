@@ -1,0 +1,117 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ricet"
+version = "0.3.0"
+description = "Scientific research automation powered by Claude Code"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    {name = "Luca Fusar Bassini"},
+]
+keywords = [
+    "research",
+    "automation",
+    "scientific-computing",
+    "claude",
+    "ai-assisted",
+    "paper-writing",
+    "experiment-tracking",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
+]
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/lucafusarbassini/research-automation"
+Documentation = "https://github.com/lucafusarbassini/research-automation#readme"
+Repository = "https://github.com/lucafusarbassini/research-automation"
+Issues = "https://github.com/lucafusarbassini/research-automation/issues"
+
+[project.optional-dependencies]
+ml = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "torch",
+]
+paper = []  # LaTeX toolchain is external; no Python deps required
+browser = []  # Puppeteer is Node.js; no Python deps required
+mobile = ["qrcode>=7.0"]  # QR code generation for mobile pairing
+slides = ["python-pptx>=0.6.21", "google-genai>=1.0.0", "Pillow>=10.0.0"]
+data = [
+    "daft",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov",
+    "black",
+    "isort",
+    "mypy",
+]
+all = [
+    "ricet[ml]",
+    "ricet[data]",
+    "ricet[slides]",
+]
+
+[project.scripts]
+ricet = "cli.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["cli", "core"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"templates" = "templates"
+"defaults" = "defaults"
+"knowledge" = "knowledge"
+"scripts" = "scripts"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov",
+    "black",
+    "isort",
+    "mypy",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = ["cli", "core"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+ignore_missing_imports = true

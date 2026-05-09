@@ -1,0 +1,63 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+.env
+.secrets
+/secrets/
+
+# Slack / bot tokens (never commit these)
+claudebot_token.txt
+slack_token.txt
+*_token.txt
+
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.out
+*.run.xml
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+state/sessions/
+state/snapshots/
+state/.notification_throttle.json
+state/DONE
+
+.DS_Store
+*.swp
+*.swo
+*~
+
+outputs/
+
+# Website build artifacts
+_build/
+site.json
+
+# Generated slide decks
+slides_output/
+
+# Sandbox
+sandbox/.env
+sandbox/patches/
+sandbox/backups/
+sandbox/workspace/
+
+# Runtime state (claude-flow daemon)
+.claude-flow/daemon-state.json
+.claude-flow/daemon.pid
