@@ -66,7 +66,7 @@
                                                     <div class="col-6">
                                                         <div class="form-group">
                                                             <label>账户名称</label>
-                                                            <input style="background: #ecf0f1" disabled
+                                                            <input style="background: #f5eae5" disabled
                                                                    th:value="${session.loginUser.userAccount}"
                                                                    type="text"/>
                                                             <input id="userId" style="display: none"
@@ -87,7 +87,7 @@
                                                     <div class="col-6">
                                                         <div class="form-group">
                                                             <label>性别</label>
-                                                            <input disabled style="background: #ecf0f1"
+                                                            <input disabled style="background: #f5eae5"
                                                                    th:value="${session.loginUser.userSex}" type="text"/>
                                                         </div>
                                                     </div>
@@ -104,7 +104,7 @@
                                                     <div class="col-6">
                                                         <div class="form-group">
                                                             <label>邮箱</label>
-                                                            <input style="background: #ecf0f1" disabled
+                                                            <input style="background: #f5eae5" disabled
                                                                    th:value="${session.loginUser.userEmail}"
                                                                    type="text"/>
                                                         </div>
@@ -120,7 +120,7 @@
 
                                                 <div class="form-group">
                                                     <label>注册时间</label>
-                                                    <input style="background: #ecf0f1" disabled
+                                                    <input style="background: #f5eae5" disabled
                                                            th:value="${#dates.format(session.loginUser.createTime, 'yyyy年MM月dd日 HH:mm:ss')}"
                                                            type="text"/>
                                                 </div>

@@ -23,21 +23,21 @@
     <link rel="stylesheet" href="common/font-awesome/css/font-awesome.min.css">
     <style>
         .disclaimer-banner {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
+            background: #fdf5f2;
+            border: 1px solid #e87461;
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 15px;
             font-size: 13px;
-            color: #856404;
+            color: #5a3e36;
         }
         .disclaimer-banner i {
-            color: #ff6b6b;
+            color: #d4634f;
             margin-right: 8px;
         }
         .related-info {
-            background: #e8f5e9;
-            border: 1px solid #4caf50;
+            background: #fff8f5;
+            border: 1px solid #ffb3a7;
             border-radius: 8px;
             padding: 10px 14px;
             margin-top: 10px;
@@ -45,11 +45,11 @@
         }
         .related-info h6 {
             margin: 0 0 6px 0;
-            color: #2e7d32;
+            color: #5a3e36;
         }
         .related-info .tag {
             display: inline-block;
-            background: #4caf50;
+            background: #e87461;
             color: white;
             padding: 2px 8px;
             border-radius: 4px;
@@ -266,11 +266,11 @@
                         if (q && q.length > 30) q = q.substring(0, 30) + '...';
                         let createTime = item.createTime;
                         html += "<div class='history-item'>";
-                        html += "<div style='font-size: 12px; color: #999; margin-bottom: 4px;'><i class='fa fa-clock-o'></i> " + createTime + "</div>";
+                        html += "<div style='font-size: 12px; color: #b0a0a0; margin-bottom: 4px;'><i class='fa fa-clock-o'></i> " + createTime + "</div>";
                         html += "<div style='font-weight: bold; font-size: 14px; margin-bottom: 4px;'>" + q + "</div>";
                         let a = item.answer;
                         if (a && a.length > 50) a = a.substring(0, 50) + '...';
-                        html += "<div style='font-size: 12px; color: #666;'>" + a + "</div>";
+                        html += "<div style='font-size: 12px; color: #8a7a72;'>" + a + "</div>";
                         html += "</div>";
                     });
                     $('#consultation-history').html(html);

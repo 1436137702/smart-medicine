@@ -43,7 +43,7 @@
                                 <div class="comment-box d-flex align-items-center justify-content-between" th:each="me:${medicineList}">
                                     <div class="list-top">
                                     <a th:href="@{findMedicineOne(id=${me.id})}">
-                                        <div class="medicine-img-wrapper" style="width: 150px; height: 150px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 8px; overflow: hidden;">
+                                        <div class="medicine-img-wrapper" style="width: 150px; height: 150px; background: #fff8f5; display: flex; align-items: center; justify-content: center; border-radius: 8px; overflow: hidden;">
                                             <img th:src="${me.imgPath}"
                                                  alt="药品图片"
                                                  style="max-width: 100%; max-height: 100%; object-fit: cover;"

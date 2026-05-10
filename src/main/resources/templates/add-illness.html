@@ -82,12 +82,12 @@
 
                                                 <div th:if="${illness.createTime != null}" class="form-group">
                                                     <label>创建时间</label>
-                                                    <input style="background: #ecf0f1" disabled type="text" th:value="${#dates.format(illness.createTime, 'yyyy-MM-dd HH:mm:ss')}"/>
+                                                    <input style="background: #f5eae5" disabled type="text" th:value="${#dates.format(illness.createTime, 'yyyy-MM-dd HH:mm:ss')}"/>
                                                 </div>
 
                                                 <div th:if="${illness.updateTime != null}" class="form-group">
                                                     <label>修改时间</label>
-                                                    <input style="background: #ecf0f1" disabled type="text" th:value="${#dates.format(illness.updateTime, 'yyyy-MM-dd HH:mm:ss')}"/>
+                                                    <input style="background: #f5eae5" disabled type="text" th:value="${#dates.format(illness.updateTime, 'yyyy-MM-dd HH:mm:ss')}"/>
                                                 </div>
 
                                             </div>
